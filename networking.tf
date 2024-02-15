@@ -1,59 +1,88 @@
+# Define provider configuration
 provider "google" {
   credentials = file(var.service_account_path)
   project     = var.project_id
   region      = var.region
 }
 
+# Purpose: Create multiple VPCs for the project
 resource "google_compute_network" "vpc" {
-  name                    = var.vpc_name
-  auto_create_subnetworks = var.auto_create_subnetworks
-  routing_mode = var.routing_mode
-  delete_default_routes_on_create = var.delete_default_routes_on_create
+  for_each = {
+    for idx in range(var.num_vpcs) : idx => {
+      name                             = "vpc-${idx + 1}"
+      auto_create_subnetworks          = var.auto_create_subnetworks
+      routing_mode                     = var.routing_mode
+      delete_default_routes_on_create = var.delete_default_routes_on_create
+    }
+  }
+
+  name                             = each.value.name
+  auto_create_subnetworks          = each.value.auto_create_subnetworks
+  routing_mode                     = each.value.routing_mode
+  delete_default_routes_on_create = each.value.delete_default_routes_on_create
 }
 
-resource "google_compute_subnetwork" "webapp_subnet" {
-  name          = var.webapp_subnet_name
-  ip_cidr_range = var.webapp_subnet_cidr
-  network       = google_compute_network.vpc.self_link
-  region        = var.region
+# Create a subnet "webapp" for each VPC
+resource "google_compute_subnetwork" "webapp" {
+  count          = length(keys(google_compute_network.vpc))
+  name           = var.num_vpcs > 1 ? (count.index == 0 ? "webapp" : "webapp-${count.index + 1}") : "webapp"
+  ip_cidr_range  = var.num_vpcs > 1 ? (count.index == 0 ? "10.0.0.0/24" : "10.${count.index}.0.0/24") : "10.0.0.0/24"
+  region         = var.region
+  network        = google_compute_network.vpc[count.index].self_link
 }
 
-resource "google_compute_subnetwork" "db_subnet" {
-  name          = var.db_subnet_name
-  ip_cidr_range = var.db_subnet_cidr
-  network       = google_compute_network.vpc.self_link
-  region        = var.region
+# Create a "db" subnet for each VPC
+resource "google_compute_subnetwork" "db" {
+  count          = length(keys(google_compute_network.vpc))
+  name           = var.num_vpcs > 1 ? (count.index == 0 ? "db" : "db-${count.index + 1}") : "db"
+  ip_cidr_range  = var.num_vpcs > 1 ? (count.index == 0 ? "10.0.1.0/24" : "10.${count.index}.1.0/24") : "10.0.1.0/24"
+  region         = var.region
+  network        = google_compute_network.vpc[count.index].self_link
 }
 
+# Define routes for each VPC
 resource "google_compute_route" "webapp_route" {
-  name              = "webapp-route"
-  network           = google_compute_network.vpc.self_link
-  dest_range        = var.dest_range
+  count              = length(keys(google_compute_network.vpc))
+  name               = var.num_vpcs > 1 ? (count.index == 0 ? "webapp-route" : "webapp-route-${count.index + 1}") : "webapp-route"
+  network            = google_compute_network.vpc[count.index].self_link
+  dest_range         = var.dest_range
   next_hop_gateway   = var.next_hop_gateway
+  # Add other necessary attributes for the route
+}
+
+# Define input variables
+variable "num_vpcs" {
+  description = "Number of VPCs to create"
+  type        = number
 }
 
 variable "auto_create_subnetworks" {
-  description = "Whether to auto-create subnetworks in the VPC"
+  description = "Auto-create subnetworks in the VPC"
   type        = bool
 }
 
-variable "dest_range" {
-  description = "Destination IP range for the route"
+variable "routing_mode" {
+  description = "Mode for the VPC"
   type        = string
 }
 
 variable "delete_default_routes_on_create" {
-  description = "Whether to delete default routes on VPC creation"
+  description = "Delete default routes on VPC creation"
   type        = bool
 }
 
-variable "db_subnet_name" {
-  description = "Name of the db subnet to be created"
+variable "webapp_subnet_cidr" {
+  description = "Range for the webapp subnet CIDR"
   type        = string
 }
 
-variable "region" {
-  description = "The GCP region to create resources in"
+variable "db_subnet_cidr" {
+  description = "Range for the db subnet CIDR"
+  type        = string
+}
+
+variable "dest_range" {
+  description = "Destination IP route"
   type        = string
 }
 
@@ -62,37 +91,27 @@ variable "next_hop_gateway" {
   type        = string
 }
 
-variable "routing_mode" {
-  description = "Routing mode for the VPC"
+variable "region" {
+  description = "The GCP region for resources"
   type        = string
 }
 
-variable "vpc_name" {
-  description = "Name of the VPC to be created"
-  type        = string
-}
-
-variable "db_subnet_cidr" {
-  description = "CIDR range for the db subnet"
+variable "service_account_path" {
+  description = "Key path for service account"
   type        = string
 }
 
 variable "project_id" {
-  description = "The ID of the GCP project"
+  description = "GCP project ID"
   type        = string
 }
 
 variable "webapp_subnet_name" {
-  description = "Name of the webapp subnet to be created"
+  description = "Webapp subnet name to be created"
   type        = string
 }
 
-variable "webapp_subnet_cidr" {
-  description = "CIDR range for the webapp subnet"
+variable "db_subnet_name" {
+  description = "db subnet name to be created"
   type        = string
-}
-
-variable "service_account_path"{
-    description = "Service account path or Key"
-    type        = string
 }
