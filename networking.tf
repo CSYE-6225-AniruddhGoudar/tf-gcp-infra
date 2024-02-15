@@ -42,16 +42,6 @@ variable "dest_range" {
   type        = string
 }
 
-variable "next_hop_gateway" {
-  description = "Next hop gateway for the route"
-  type        = string
-}
-
-variable "routing_mode" {
-  description = "Routing mode for the VPC"
-  type        = string
-}
-
 variable "delete_default_routes_on_create" {
   description = "Whether to delete default routes on VPC creation"
   type        = bool
@@ -64,6 +54,16 @@ variable "db_subnet_name" {
 
 variable "region" {
   description = "The GCP region to create resources in"
+  type        = string
+}
+
+variable "next_hop_gateway" {
+  description = "Next hop gateway for the route"
+  type        = string
+}
+
+variable "routing_mode" {
+  description = "Routing mode for the VPC"
   type        = string
 }
 
