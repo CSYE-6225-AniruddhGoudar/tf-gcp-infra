@@ -3,7 +3,7 @@ provider "google" {
   credentials = file(var.service_account_path)
   project     = var.project_id
   region      = var.region
-}
+
 
 # Purpose: Create multiple VPCs for the project
 resource "google_compute_network" "vpc" {
