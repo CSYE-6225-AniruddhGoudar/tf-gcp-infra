@@ -1,15 +1,29 @@
-resource "google_compute_firewall" "allow_ssh" {
+resource "google_compute_firewall" "allow_tcp" {
   count   = var.num_vpcs
-  name    = "allow-ssh-${count.index}"
+  name    = "allow-tcp-${count.index}"
   network = google_compute_network.vpc[count.index].name
 
   allow {
-    protocol = "tcp"
-    ports    = ["8080"]
+    protocol = var.protocol
+    ports    = var.allow_tcp_port
   }
 
-  source_ranges = ["0.0.0.0/0"]
-  target_tags = ["webapp"]
+  source_ranges = var.source_ranges
+  target_tags = var.target_tags
+}
+
+resource "google_compute_firewall" "deny_ssh" {
+  count   = var.num_vpcs
+  name    = "deny-ssh-${count.index}"
+  network = google_compute_network.vpc[count.index].name
+
+  deny {
+    protocol = var.protocol
+    ports    = var.deny_ssh_port
+  }
+
+  source_ranges = var.source_ranges
+  target_tags = var.target_tags
 }
 
 resource "google_compute_instance" "myvm01" {
@@ -38,6 +52,6 @@ resource "google_compute_instance" "myvm01" {
       // Ephemeral public IP
     }
   }
- tags         = ["webapp"]
- depends_on = [google_compute_subnetwork.webapp, google_compute_firewall.allow_ssh]
+ tags         = var.target_tags
+ depends_on = [google_compute_subnetwork.webapp, google_compute_firewall.allow_tcp, google_compute_firewall.deny_ssh]
 }
