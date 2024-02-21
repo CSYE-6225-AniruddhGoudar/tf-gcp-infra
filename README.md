@@ -11,3 +11,12 @@ Enabled GCP Service APIs
 * Cloud Build API
 
 Note: Related other APIs were enabled along with the above mentioned
+
+# CREATION of Virtual Machine
+
+Set Up Google Cloud Provider
+Define Compute Instance
+Deploy VM
+Access Your VM:
+Once the VM is created, you can access it via SSH or RDP depending on the operating system and configuration of your instance.
+
