@@ -25,8 +25,8 @@ resource "google_compute_network" "vpc" {
 # Create a subnet "webapp" for each VPC
 resource "google_compute_subnetwork" "webapp" {
   count          = length(keys(google_compute_network.vpc))
-  name           = var.num_vpcs > 1 ? (count.index == 0 ? "webapp" : "webapp-${count.index + 1}") : "webapp"
-  ip_cidr_range  = var.num_vpcs > 1 ? (count.index == 0 ? "10.0.0.0/24" : "10.${count.index}.0.0/24") : "10.0.0.0/24"
+  name           = var.num_vpcs > 1 ? (count.index == 0 ? var.webapp_subnet_name : "webapp-${count.index + 1}") : var.webapp_subnet_name
+  ip_cidr_range  = var.num_vpcs > 1 ? (count.index == 0 ? var.webapp_subnet_cidr : "10.${count.index}.0.0/24") : var.webapp_subnet_cidr
   region         = var.region
   network        = google_compute_network.vpc[count.index].self_link
 }
@@ -34,8 +34,8 @@ resource "google_compute_subnetwork" "webapp" {
 # Create a "db" subnet for each VPC
 resource "google_compute_subnetwork" "db" {
   count          = length(keys(google_compute_network.vpc))
-  name           = var.num_vpcs > 1 ? (count.index == 0 ? "db" : "db-${count.index + 1}") : "db"
-  ip_cidr_range  = var.num_vpcs > 1 ? (count.index == 0 ? "10.0.1.0/24" : "10.${count.index}.1.0/24") : "10.0.1.0/24"
+  name           = var.num_vpcs > 1 ? (count.index == 0 ? var.db_subnet_name : "db-${count.index + 1}") : var.db_subnet_name
+  ip_cidr_range  = var.num_vpcs > 1 ? (count.index == 0 ? var.db_subnet_cidr : "10.${count.index}.1.0/24") : var.db_subnet_cidr
   region         = var.region
   network        = google_compute_network.vpc[count.index].self_link
 }
@@ -115,3 +115,34 @@ variable "db_subnet_name" {
   description = "db subnet name to be created"
   type        = string
 }
+
+variable "machine_type" {
+  description = "machine type details"
+  type        = string
+}
+
+variable "hostname" {
+  description = "hostname of a VM "
+  type        = string
+}
+
+variable "allow_stopping_for_update" {
+  description = "Update allow "
+  type        = bool
+}
+
+variable "image" {
+  description = "image name here"
+  type        = string
+}
+
+variable "type"{
+  description = "image type"
+  type        = string
+}
+
+variable "size"{
+  description = "image disk size"
+  type        = number
+}
+
