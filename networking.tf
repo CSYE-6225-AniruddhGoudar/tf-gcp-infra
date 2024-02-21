@@ -146,3 +146,27 @@ variable "size"{
   type        = number
 }
 
+variable "protocol"{
+  description = "protocol"
+  type        = string
+}
+
+variable "allow_tcp_port"{
+  description = "allow_tcp_port"
+  type        = list(number)
+}
+
+variable "deny_ssh_port"{
+  description = "deny_ssh_port"
+  type        = list(number)
+}
+
+variable "source_ranges"{
+  description = "source_ranges"
+  type        = list(string)
+}
+
+variable "target_tags"{
+  description = "target_tags"
+  type        = list(string)
+}
