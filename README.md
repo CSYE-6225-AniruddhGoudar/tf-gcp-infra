@@ -20,3 +20,6 @@ Deploy VM
 Access Your VM:
 Once the VM is created, you can access it via SSH or RDP depending on the operating system and configuration of your instance.
 
+# Creation of SQL-DB-Instance, Sql-DB, Sql-User, Private-Access
+
+More...
