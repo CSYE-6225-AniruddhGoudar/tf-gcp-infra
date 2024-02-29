@@ -1,12 +1,13 @@
 resource "google_sql_database_instance" "cloud_sql_instance" {
-  count            = length(keys(google_compute_network.vpc))
- name = "${var.sql_name}-${formatdate("YYYYMMDDHHMM00", timestamp())}"
+  count               = length(keys(google_compute_network.vpc))
+  name                = "${var.sql_name}-${formatdate("YYYYMMDDHHMM00", timestamp())}"
   region              = var.region
   database_version    = var.database_version
   root_password       = var.root_password
   deletion_protection = var.deletion_protection
 
-  depends_on = [google_compute_network.vpc]
+  depends_on = [google_compute_network.vpc, google_service_networking_connection.private_connection ]
+
   settings {
     tier              = var.instance_tier
     availability_type = var.availability_type

@@ -25,7 +25,7 @@ resource "google_compute_global_address" "internalIP" {
 # [END compute_forwarding_rule_private_access]
 
 # Establish private access connections for each VPC to Google Service Networking
-resource "google_service_networking_connection" "private_access_connection" {
+resource "google_service_networking_connection" "private_connection" {
   count                  = length(keys(google_compute_network.vpc))
   network                = google_compute_network.vpc[count.index].self_link
   service                = var.connection_service
@@ -37,5 +37,5 @@ resource "google_service_networking_connection" "private_access_connection" {
 }
 
 resource "null_resource" "dependency_setter" {
-  depends_on = [google_service_networking_connection.private_access_connection]
+  depends_on = [google_service_networking_connection.private_connection]
 }
