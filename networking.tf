@@ -30,7 +30,7 @@ resource "google_compute_subnetwork" "webapp" {
   ip_cidr_range  = var.num_vpcs > 1 ? (count.index == 0 ? var.webapp_subnet_cidr : "10.${count.index}.0.0/24") : var.webapp_subnet_cidr
   region         = var.region
   network        = google_compute_network.vpc[count.index].self_link
-  private_ip_google_access = true
+  //private_ip_google_access = true
 }
 
 # Create a "db" subnet for each VPC
@@ -41,7 +41,7 @@ resource "google_compute_subnetwork" "db" {
   ip_cidr_range  = var.num_vpcs > 1 ? (count.index == 0 ? var.db_subnet_cidr : "10.${count.index}.1.0/24") : var.db_subnet_cidr
   region         = var.region
   network        = google_compute_network.vpc[count.index].self_link
-  //private_ip_google_access = true //added
+  private_ip_google_access = true //added
 }
 
 # Define routes for each VPC
