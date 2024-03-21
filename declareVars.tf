@@ -224,3 +224,43 @@ variable "instance_tier" {
   description = "instance_tier"
   type        = string
 }
+
+variable "dns_zone_name" {
+  description = "dns-zone-name"
+  type = string
+}
+
+variable "dns_record_name" {
+  description = "dns_record_name"
+  type = string
+}
+
+variable "dns_record_type" {
+  description = "dns_record_type"
+  type = string
+}
+
+variable "dns_record_ttl" {
+  description = "dns_record_ttl"
+  type = number
+}
+
+variable "account_id" {
+  description = "account_id"
+  type = string
+}
+
+variable "loggingAdminRole" {
+  description = "loggingAdminRole"
+  type = string
+}
+
+variable "monitoringMetricWriterRole" {
+  description = "monitoringMetricWriterRole"
+  type = string
+}
+
+variable "display_name" {
+  description = "display_name"
+  type = string
+}

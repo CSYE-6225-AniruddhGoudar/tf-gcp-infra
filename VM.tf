@@ -13,6 +13,7 @@ resource "google_compute_firewall" "allow_tcp" {
   target_tags = var.target_tags
 }
 
+
 resource "google_compute_firewall" "deny_ssh" {
   count   = var.num_vpcs
   name    = "deny-ssh-${count.index}"
@@ -26,6 +27,27 @@ resource "google_compute_firewall" "deny_ssh" {
 
   source_ranges = var.source_ranges
   target_tags = var.target_tags
+}
+
+resource "google_service_account" "WebappServiceAccount" {
+  account_id   = var.account_id
+  display_name = var.display_name
+}
+
+resource "google_project_iam_binding" "loggingAdminRole" {
+  project = var.project_id
+  role    = var.loggingAdminRole
+  members = [
+    "serviceAccount:${google_service_account.WebappServiceAccount.email}"
+  ]
+}
+
+resource "google_project_iam_binding" "monitoringMetricWriterRole" {
+  project = var.project_id
+  role    = var.monitoringMetricWriterRole
+  members = [
+    "serviceAccount:${google_service_account.WebappServiceAccount.email}"
+  ]
 }
 
 resource "google_compute_instance" "myvm01" {
@@ -54,6 +76,12 @@ resource "google_compute_instance" "myvm01" {
     }
   }
  tags         = var.target_tags
+
+ service_account {
+    email  = google_service_account.WebappServiceAccount.email
+    scopes = ["monitoring-write" , "logging-write"]
+  }
+
  depends_on = [google_compute_subnetwork.webapp, 
  google_compute_firewall.allow_tcp, google_compute_firewall.deny_ssh, 
  google_sql_database_instance.cloud_sql_instance]
@@ -64,13 +92,18 @@ metadata_startup_script = <<-EOF
 cd /opt/csye6225/webapp
 if [ ! -f .env ]; then
   touch .env
-fi
 
-# Database configuration
-echo "DATABASE_HOST=${google_sql_database_instance.cloud_sql_instance[count.index].ip_address.0.ip_address}" >> .env
-echo "DATABASE_USER=${google_sql_user.database_user[count.index].name}" >> .env
-echo "DATABASE_PASSWORD=${random_password.database_password.result}" >> .env
-echo "DATABASE_NAME=${var.database_name}" >> .env
+
+  # Database configuration
+  echo "DATABASE_HOST=${google_sql_database_instance.cloud_sql_instance[count.index].ip_address.0.ip_address}" >> .env
+  echo "DATABASE_USER=${google_sql_user.database_user[count.index].name}" >> .env
+  echo "DATABASE_PASSWORD=${random_password.database_password.result}" >> .env
+  echo "DATABASE_NAME=${var.database_name}" >> .env
+  echo "WEBAPP_LOG_PATH=/var/log/webapplication/webapp.log" >> .env
+
+else
+    echo ".env file exists"
+fi
 
 # Reload systemctl daemon
 sudo systemctl daemon-reload

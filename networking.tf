@@ -53,3 +53,13 @@ resource "google_compute_route" "webapp_route" {
   next_hop_gateway   = var.next_hop_gateway
   # Add other necessary attributes for the route
 }
+
+resource "google_dns_record_set" "webapp" {
+  count        = var.num_vpcs  # Assuming you want to create a DNS record for each instance
+  name         = var.dns_record_name
+  type         = var.dns_record_type
+  ttl          = var.dns_record_ttl
+  managed_zone = var.dns_zone_name
+  rrdatas      = [google_compute_instance.myvm01[count.index].network_interface[0].access_config[0].nat_ip]
+  depends_on = [google_compute_instance.myvm01]
+}
