@@ -264,3 +264,111 @@ variable "display_name" {
   description = "display_name"
   type = string
 }
+
+variable "topic_name" {
+  description = "topic_name"
+  type = string
+}
+
+variable "node_env_name" {
+  description = "node_env_name"
+  type = string
+}
+
+variable "topic_subscription" {
+  description = "topic_subscription"
+  type = string
+  
+}
+
+variable "message_retention_duration" {
+  description = "message_retention_duration"
+  type = string
+}
+
+variable "retain_acked_messages" {
+  description = "retain_acked_messages"
+  type = bool
+}
+
+variable "ack_deadline_seconds" {
+  description = "ack_deadline_seconds"
+  type = number
+}
+
+variable "publisher_role" {
+  description = "publisher_role"
+  type = string
+  
+}
+
+variable "vpc_connector_name" {
+  description = "publisher_role"
+  type = string
+}
+
+variable "vpc_connector_cidr"{
+  description = "vpc_connector_cidr"
+  type = string
+}
+
+variable "vpc_connector_machine_type"{
+  description = "vpc_connector_machine_type"
+  type = string
+}
+
+variable "cloudsql_client_role" {
+  description = "The Cloud SQL client role to assign"
+  type        = string
+}
+
+variable "cloudsql_admin_role" {
+  description = "The Cloud SQL admin role to assign"
+  type        = string
+}
+
+variable "iam_service_account_token_creator_role" {
+  description = "The IAM Service Account Token Creator role to assign"
+  type        = string
+}
+
+variable "cloudsql_editor_role" {
+  description = "The Cloud SQL editor role to assign"
+  type        = string
+ 
+}
+
+variable "artifact_registry_writer_role" {
+  description = "The Artifact Registry writer role to assign"
+  type        = string
+}
+
+variable "cloudfunctions_developer_role" {
+  description = "The Cloud Functions developer role to assign"
+  type        = string
+ 
+}
+
+variable "logging_admin_role" {
+  description = "The Logging admin role to assign"
+  type        = string
+ 
+}
+
+variable "storage_object_admin_role" {
+  description = "The Storage object admin role to assign"
+  type        = string
+ 
+}
+
+variable "cloud_run_invoker_role" {
+  description = "The Cloud Run invoker role to assign"
+  type        = string
+  
+}
+
+variable "logging_log_writer_role" {
+  description = "The Logging log writer role to assign"
+  type        = string
+  
+}

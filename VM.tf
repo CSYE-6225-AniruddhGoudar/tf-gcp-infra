@@ -100,6 +100,8 @@ if [ ! -f .env ]; then
   echo "DATABASE_PASSWORD=${random_password.database_password.result}" >> .env
   echo "DATABASE_NAME=${var.database_name}" >> .env
   echo "WEBAPP_LOG_PATH=/var/log/webapplication/webapp.log" >> .env
+  echo "TOPIC=${var.topic_name}" >> .env
+  echo "NODE_ENV=${var.node_env_name}" >> .env
 
 else
     echo ".env file exists"
