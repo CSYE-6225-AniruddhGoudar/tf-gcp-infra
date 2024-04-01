@@ -372,3 +372,33 @@ variable "logging_log_writer_role" {
   type        = string
   
 }
+
+# variable "subscription_ttl"{
+#   description = "subscription_ttl"
+#   type = string
+# }
+
+variable "entry_point"{
+  description = "entry_point"
+  type = string
+}
+
+variable "nodejs_version" {
+  description = "nodejs_version"
+  type = string
+}
+
+variable "cloud_function_name" {
+  description = "cloud_function_name"
+  type = string
+}
+
+variable "source_archive_bucket" {
+  description = "source_archive_bucket"
+  type = string
+}
+
+variable "source_archive_object" {
+  description = "source_archive_object"
+  type = string
+}

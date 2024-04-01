@@ -23,3 +23,11 @@ Once the VM is created, you can access it via SSH or RDP depending on the operat
 # Creation of SQL-DB-Instance, Sql-DB, Sql-User, Private-Access
 
 More.....
+
+# Creation of Cloud Function , Pub Sub
+
+More ...
+
+# Creation of Instance Template , MIG , Loadbalancer
+
+TBD
