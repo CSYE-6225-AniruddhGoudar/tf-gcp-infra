@@ -79,7 +79,7 @@ resource "google_compute_instance" "myvm01" {
 
  service_account {
     email  = google_service_account.WebappServiceAccount.email
-    scopes = ["monitoring-write" , "logging-write"]
+    scopes = ["monitoring-write" , "logging-write", "pubsub"]
   }
 
  depends_on = [google_compute_subnetwork.webapp, 

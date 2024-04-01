@@ -12,6 +12,9 @@ resource "google_pubsub_subscription" "pubsub_subscription" {
   message_retention_duration = var.message_retention_duration
   retain_acked_messages      = var.retain_acked_messages
   ack_deadline_seconds = var.ack_deadline_seconds
+  # expiration_policy {
+  #   ttl = var.subscription_ttl
+  # }
   
 }
 
@@ -23,6 +26,7 @@ resource "google_project_iam_binding" "pubsub_publisher_role_binding" {
     "serviceAccount:${google_service_account.WebappServiceAccount.email}"
   ]
   depends_on = [google_service_account.WebappServiceAccount]
+  # topic = google_pubsub_topic.verify_email_topic.name
 }
 
 # Define VPC Connector
@@ -87,15 +91,16 @@ resource "google_vpc_access_connector" "cloud_function_connector" {
   # source_archive_object   = "serverless1.zip"
 
 resource "google_cloudfunctions_function" "verify_email_function" {
-  name        = "verify_email_function"
-  runtime     = "nodejs20"
+  name        = var.cloud_function_name
+  runtime     = var.nodejs_version
   count    = var.num_vpcs
-  source_archive_bucket = "bucketwebapp"
-  source_archive_object = "serverless1.zip"
-  entry_point = "handleEmailVerification"
-  timeout     = "60"
+  source_archive_bucket = var.source_archive_bucket
+  source_archive_object = var.source_archive_object
+  entry_point = var.entry_point
+  timeout     = "540"
   available_memory_mb   = 256
-  service_account_email         = google_service_account.WebappServiceAccount.email
+  ingress_settings       = "ALLOW_ALL"
+  service_account_email = google_service_account.WebappServiceAccount.email
   event_trigger {
     
     event_type = "google.pubsub.topic.publish"

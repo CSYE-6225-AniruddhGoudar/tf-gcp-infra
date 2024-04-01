@@ -63,3 +63,19 @@ resource "google_dns_record_set" "webapp" {
   rrdatas      = [google_compute_instance.myvm01[count.index].network_interface[0].access_config[0].nat_ip]
   depends_on = [google_compute_instance.myvm01]
 }
+
+resource "google_compute_firewall" "allow-webapp-firewall" {
+  
+  count = var.num_vpcs
+  name    = "allow-firewall"
+  network = google_compute_network.vpc[count.index].self_link
+ 
+  allow {
+    protocol = "tcp"
+    ports = ["5432"]
+  }
+
+  source_ranges = ["10.2.0.0/28"]
+  direction = "EGRESS"
+  priority = 500
+}
