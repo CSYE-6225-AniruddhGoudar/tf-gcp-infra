@@ -1,17 +1,17 @@
-resource "google_compute_firewall" "allow_tcp" {
-  count   = var.num_vpcs
-  name    = "allow-tcp-${count.index}"
-  network = google_compute_network.vpc[count.index].name
-  priority = var.allow_tcp_port_priority 
+# resource "google_compute_firewall" "allow_tcp" {
+#   count   = var.num_vpcs
+#   name    = "allow-tcp-${count.index}"
+#   network = google_compute_network.vpc[count.index].name
+#   priority = var.allow_tcp_port_priority 
 
-  allow {
-    protocol = var.protocol
-    ports    = var.allow_tcp_port
-  }
+#   allow {
+#     protocol = var.protocol
+#     ports    = var.allow_tcp_port
+#   }
 
-  source_ranges = var.source_ranges
-  target_tags = var.target_tags
-}
+#   source_ranges = var.source_ranges
+#   target_tags = var.target_tags
+# }
 
 
 resource "google_compute_firewall" "deny_ssh" {
@@ -28,6 +28,23 @@ resource "google_compute_firewall" "deny_ssh" {
   source_ranges = var.source_ranges
   target_tags = var.target_tags
 }
+
+
+resource "google_compute_firewall" "allow_ssh" {
+  count   = var.num_vpcs
+  name    = "allow-ssh-${count.index}"
+  network = google_compute_network.vpc[count.index].name
+  priority = var.allow_ssh_port_priority 
+
+  allow {
+    protocol = var.protocol
+    ports    = var.allow_tcp_port
+  }
+
+  source_ranges = var.source_ranges
+  target_tags = var.target_tags
+}
+
 
 resource "google_service_account" "WebappServiceAccount" {
   account_id   = var.account_id
@@ -79,11 +96,11 @@ resource "google_compute_instance" "myvm01" {
 
  service_account {
     email  = google_service_account.WebappServiceAccount.email
-    scopes = ["monitoring-write" , "logging-write", "pubsub"]
+    scopes = ["monitoring-write" , "logging-write", "pubsub",  "userinfo-email", "storage-ro", "compute-ro", "cloud-platform"]
   }
 
  depends_on = [google_compute_subnetwork.webapp, 
- google_compute_firewall.allow_tcp, google_compute_firewall.deny_ssh, 
+ google_compute_firewall.healthz_firewall, google_compute_firewall.deny_ssh, 
  google_sql_database_instance.cloud_sql_instance]
 
 
