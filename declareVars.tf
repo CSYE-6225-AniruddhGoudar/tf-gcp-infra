@@ -373,11 +373,6 @@ variable "logging_log_writer_role" {
   
 }
 
-# variable "subscription_ttl"{
-#   description = "subscription_ttl"
-#   type = string
-# }
-
 variable "entry_point"{
   description = "entry_point"
   type = string
@@ -401,4 +396,313 @@ variable "source_archive_bucket" {
 variable "source_archive_object" {
   description = "source_archive_object"
   type = string
+}
+
+variable "template_name"{
+  description = "template_name"
+  type = string
+}
+
+variable "lb_subnet_name"{
+  description = "lb_subnet_name"
+  type = string
+}
+
+variable "lb_subnet_cidr"{
+  description = "lb_subnet_cidr"
+  type = string
+}
+
+variable "can_ip_forward"{
+  description = "can_ip_forward"
+  type = bool
+}
+/////////////////////////////////////////////
+
+variable "disk_auto_delete"{
+  description = "disk_auto_delete"
+  type = bool
+}
+
+variable "disk_boot"{
+  description = "disk_boot"
+  type = bool
+}
+
+variable "disk_size_gb"{
+  description = "disk_size_gb"
+  type = number
+}
+
+variable "reservation_affinity_type"{
+  description = "reservation_affinity_type"
+  type = string
+}
+
+variable "scheduling_preemptible"{
+  description = "scheduling_preemptible"
+  type = bool
+}
+
+variable "scheduling_automatic_restart"{
+  description = "scheduling_preemptible"
+  type = bool
+}
+
+variable "gce-service-proxy"{
+  description = "gce-service-proxy"
+  type = string
+}
+
+variable "mig_name"{
+  description = "mig_name"
+  type = string
+}
+
+
+
+variable "distribution_policy_target_shape"{
+  description = "scheduling_preemptible"
+  type = string
+}
+
+variable "distribution_policy_zones"{
+  description = "gce-service-proxy"
+  type = list(string)
+}
+
+variable "base_instance_name"{
+  description = "base_instance_name"
+  type = string
+}
+
+
+variable "named_port_name"{
+  description = "named_port_name"
+  type = string
+}
+
+variable "named_port"{
+  description = "gce-service-proxy"
+  type = number
+}
+
+variable "initial_delay_sec"{
+  description = "mig_name"
+  type = number
+}
+
+
+
+# variable "create_before_destroy"{
+#   description = "named_port_name"
+#   type = bool
+# }
+
+variable "webapp_autoscaler_name"{
+  description = "gce-service-proxy"
+  type = string
+}
+
+variable "max_replicas"{
+  description = "mig_name"
+  type = number
+}
+
+
+variable "min_replicas"{
+  description = "named_port_name"
+  type = number
+}
+
+variable "cooldown_period"{
+  description = "gce-service-proxy"
+  type = number
+}
+
+variable "cpu_utilization_target"{
+  description = "mig_name"
+  type = number
+}
+
+
+variable "health_check_name"{
+  description = "named_port_name"
+  type = string
+}
+
+variable "health_check_interval_sec"{
+  description = ""
+  type = number
+}
+
+variable "heath_timeout_sec"{
+  description = "mig_name"
+  type = number
+}
+
+variable "healthy_threshold"{
+  description = "named_port_name"
+  type = number
+}
+
+variable "unhealthy_threshold"{
+  description = "gce-service-proxy"
+  type = number
+}
+
+variable "http_health_check_port_name"{
+  description = "mig_name"
+  type = string
+}
+
+
+variable "http_health_check_request_path"{
+  description = "named_port_name"
+  type = string
+}
+
+variable "http_health_check_port"{
+  description = "gce-service-proxy"
+  type = number
+}
+
+variable "healthz_firewall_name"{
+  description = "mig_name"
+  type = string
+}
+
+
+variable "healthz_firewall_direction"{
+  description = "mig_name"
+  type = string
+}
+
+
+variable "healthz_firewall_source_ranges"{
+  description = "named_port_name"
+  type = list(string)
+}
+
+variable "healthz_allow_protocol"{
+  description = "gce-service-proxy"
+  type = string
+}
+
+variable "healthz_allow_ports"{
+  description = "mig_name"
+  type = list(string)
+}
+
+
+variable "instance_forward_rule_name"{
+  description = "mig_name"
+  type = string
+}
+
+
+variable "fwd_rule_ip_protocol"{
+  description = "named_port_name"
+  type = string
+}
+
+variable "fwd_rule_load_balancing_scheme"{
+  description = "gce-service-proxy"
+  type = string
+}
+
+variable "fwd_rule_port_range"{
+  description = "mig_name"
+  type = number
+}
+
+variable "webapp_ssl_name"{
+  description = ""
+  type = string
+}
+
+
+variable "managed_domains"{
+  description = "named_port_name"
+  type = list(string)
+}
+
+variable "webapp_target_proxy_name"{
+  description = ""
+  type = string
+}
+
+variable "instance_url_name"{
+  description = "mig_name"
+  type = string
+}
+
+
+
+variable "lb_backend_service_name"{
+  description = "named_port_name"
+  type = string
+}
+
+variable "lb_backend_service_protocol"{
+  description = "gce-service-proxy"
+  type = string
+}
+
+variable "lb_backend_service_port_name"{
+  description = "mig_name"
+  type = string
+}
+
+
+variable "load_balancing_scheme"{
+  description = "named_port_name"
+  type = string
+}
+
+variable "lb_timeout_sec"{
+  description = "gce-service-proxy"
+  type = number
+}
+
+variable "lb_enable_cdn"{
+  description = "mig_name"
+  type = bool
+}
+
+variable "balancing_mode"{
+  description = "balancing_mode"
+  type = string
+}
+
+variable "capacity_scaler"{
+  description = "mig_name"
+  type = number
+}
+
+variable "MAILGUN_API_KEY"{
+  description = "mig_name"
+  type = string
+}
+
+
+variable "DOMAIN_NAME"{
+  description = "balancing_mode"
+  type = string
+}
+
+variable "MAILGUN_FROM_EMAIL"{
+  description = "mig_name"
+  type = string
+}
+
+variable "VERIFICATION_LINK"{
+  description = "mig_name"
+  type = string
+}
+
+
+variable "allow_ssh_port_priority"{
+  description = "allow_ssh_port_priority"
+  type = number
 }

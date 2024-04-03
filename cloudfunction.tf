@@ -115,6 +115,11 @@ resource "google_cloudfunctions_function" "verify_email_function" {
     DATABASE_USER                      = google_sql_user.database_user[count.index].name
     DATABASE_PASSWORD                  = random_password.database_password.result
     DATABASE_NAME                      = var.database_name
+    MAILGUN_API_KEY = var.MAILGUN_API_KEY
+    DOMAIN_NAME = var.DOMAIN_NAME
+    MAILGUN_FROM_EMAIL = var.MAILGUN_FROM_EMAIL
+    VERIFICATION_LINK = var.VERIFICATION_LINK
+
   }
 }
 

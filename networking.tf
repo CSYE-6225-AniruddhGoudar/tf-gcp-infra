@@ -44,6 +44,17 @@ resource "google_compute_subnetwork" "db" {
   private_ip_google_access = true //added
 }
 
+
+# Create a "loadbalancerSubnet" subnet for each VPC
+resource "google_compute_subnetwork" "lb" {
+  count          = length(keys(google_compute_network.vpc))
+  name           = var.num_vpcs > 1 ? (count.index == 0 ? var.lb_subnet_name : "db-${count.index + 1}") : var.lb_subnet_name
+  ip_cidr_range  = var.num_vpcs > 1 ? (count.index == 0 ? var.lb_subnet_cidr : "10.${count.index}.1.0/24") : var.lb_subnet_cidr
+  region         = var.region
+  network        = google_compute_network.vpc[count.index].self_link
+  //private_ip_google_access = true //added
+}
+
 # Define routes for each VPC
 resource "google_compute_route" "webapp_route" {
   count              = length(keys(google_compute_network.vpc))
@@ -60,8 +71,8 @@ resource "google_dns_record_set" "webapp" {
   type         = var.dns_record_type
   ttl          = var.dns_record_ttl
   managed_zone = var.dns_zone_name
-  rrdatas      = [google_compute_instance.myvm01[count.index].network_interface[0].access_config[0].nat_ip]
-  depends_on = [google_compute_instance.myvm01]
+  rrdatas      = [google_compute_global_address.forward_address[count.index].address]
+  depends_on = [google_compute_global_address.forward_address, google_compute_global_address.internalIP]
 }
 
 resource "google_compute_firewall" "allow-webapp-firewall" {
