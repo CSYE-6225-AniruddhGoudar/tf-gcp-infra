@@ -706,3 +706,61 @@ variable "allow_ssh_port_priority"{
   description = "allow_ssh_port_priority"
   type = number
 }
+
+variable "key_ring_name"{
+  description = "key_ring_name"
+  type = string
+}
+
+variable "vm_crypto_key"{
+  description = "vm_crypto_key"
+  type = string
+}
+
+
+variable "cloudsql_crypto_key"{
+  description = "cloudsql_crypto_key"
+  type = string
+}
+
+
+variable "storage_crypto_key"{
+  description = "storage_crypto_key"
+  type = string
+}
+
+variable "rotation_period"{
+  description = "rotation_period"
+  type = string
+}
+
+variable "bucket_name"{
+  description = "bucket_name"
+  type = string
+}
+
+variable "object_source_path"{
+  description = "object_source_path"
+  type = string
+}
+
+variable "object_name"{
+  description = "object_name"
+  type = string
+}
+
+variable "service"{
+  description = "service"
+  type = string
+}
+
+variable "cloudSqlRole"{
+  description = "cloudSqlRole"
+  type = string
+}
+
+variable "bindingrole"{
+  description = "bindingrole"
+  type = string
+}
+
