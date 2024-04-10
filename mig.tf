@@ -4,6 +4,45 @@ resource "google_compute_global_address" "forward_address" {
   name         = "fwd-address"
 }
 
+resource "google_project_service_identity" "service_identity_account" {
+  provider = google-beta
+  project = var.project_id
+  service  = var.service
+}
+
+resource "google_project_iam_binding" "cloudSqlRole" {
+  project = var.project_id
+  role    = var.cloudSqlRole
+  members = [
+    "serviceAccount:${google_service_account.WebappServiceAccount.email}"
+  ]
+  depends_on = [google_kms_crypto_key.storage_crypto_key ]
+}
+
+resource "google_kms_crypto_key_iam_binding" "vm_binding" {
+    crypto_key_id = google_kms_crypto_key.vm_crypto_key.id
+    role =  var.bindingrole
+    members = [
+                "serviceAccount:service-441163967271@compute-system.iam.gserviceaccount.com"
+                ]
+  depends_on = [ google_kms_crypto_key.vm_crypto_key ]
+}
+
+resource "google_kms_crypto_key_iam_binding" "cloudsql_binding" {
+    crypto_key_id = google_kms_crypto_key.cloudsql_crypto_key.id
+    role =  var.bindingrole
+    members = [
+                 "serviceAccount:${google_project_service_identity.service_identity_account.email}"
+                ]
+  depends_on = [ google_kms_crypto_key.cloudsql_crypto_key ]
+}
+
+resource "google_kms_crypto_key_iam_binding" "storage_binding" {
+    crypto_key_id = google_kms_crypto_key.storage_crypto_key.id
+    role =  var.bindingrole
+    members = [ "serviceAccount:service-441163967271@gs-project-accounts.iam.gserviceaccount.com" ]
+   depends_on = [google_kms_crypto_key.storage_crypto_key ]
+}
 
 resource "google_compute_region_instance_template" "VMtemplate" {
   count          = var.num_vpcs
@@ -14,17 +53,20 @@ resource "google_compute_region_instance_template" "VMtemplate" {
   tags           = var.target_tags
 
 disk {
+    
     source_image = var.image
     auto_delete  = var.disk_auto_delete
     boot         = var.disk_boot
     disk_size_gb =var.disk_size_gb
     disk_type = var.disk_type
-  
+    disk_encryption_key {
+      kms_key_self_link = google_kms_crypto_key.vm_crypto_key.id
+    }
   }
   reservation_affinity{
     type = var.reservation_affinity_type
   }
-
+  
   network_interface {
     network = google_compute_network.vpc[count.index].self_link
     subnetwork = google_compute_subnetwork.lb[count.index].self_link
@@ -72,8 +114,10 @@ disk {
   labels = {
     gce-service-proxy = var.gce-service-proxy
   }
-  depends_on = [google_compute_subnetwork.webapp, google_pubsub_topic.pubsub_topic, google_sql_database_instance.cloud_sql_instance]
+  depends_on = [google_compute_subnetwork.webapp, google_pubsub_topic.pubsub_topic, google_sql_database_instance.cloud_sql_instance,google_kms_crypto_key.vm_crypto_key,
+    google_kms_crypto_key.cloudsql_crypto_key,]
 }
+
 resource "google_compute_region_instance_group_manager" "VMtemplate_mig1" {
   count                            = var.num_vpcs
   name                             = var.mig_name
@@ -149,7 +193,7 @@ resource "google_compute_firewall" "healthz_firewall" {
   name          = var.healthz_firewall_name
   direction     = var.healthz_firewall_direction
   network       = google_compute_network.vpc[count.index].self_link
-  priority = var.allow_tcp_port_priority 
+  priority = var.allow_tcp_port_priority
   source_ranges = var.healthz_firewall_source_ranges
   allow {
     protocol = var.healthz_allow_protocol
