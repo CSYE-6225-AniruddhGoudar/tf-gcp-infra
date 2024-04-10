@@ -86,8 +86,6 @@ disk {
     cd /opt/csye6225/webapp
     if [ ! -f .env ]; then
     touch .env
-
-    # Database configuration
     echo "DATABASE_HOST=${google_sql_database_instance.cloud_sql_instance[count.index].ip_address.0.ip_address}" >> .env
     echo "DATABASE_USER=${google_sql_user.database_user[count.index].name}" >> .env
     echo "DATABASE_PASSWORD=${random_password.database_password.result}" >> .env
@@ -95,12 +93,9 @@ disk {
     echo "WEBAPP_LOG_PATH=/var/log/webapplication/webapp.log" >> .env
     echo "TOPIC=${var.topic_name}" >> .env
     echo "NODE_ENV=${var.node_env_name}" >> .env
-
     else
         echo ".env file exists"
     fi
-
-    # Reload systemctl daemon
     sudo systemctl daemon-reload
     EOF
   }

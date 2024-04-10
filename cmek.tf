@@ -10,7 +10,7 @@ resource "google_kms_key_ring" "key_ring" {
 resource "google_kms_crypto_key" "vm_crypto_key" {
   name = var.vm_crypto_key
   key_ring = google_kms_key_ring.key_ring.id
-  //key_ring = "webapp-key-ring4"
+
   rotation_period = var.rotation_period
   lifecycle {
     prevent_destroy = false
@@ -20,7 +20,7 @@ resource "google_kms_crypto_key" "vm_crypto_key" {
 resource "google_kms_crypto_key" "cloudsql_crypto_key" {
   name = var.cloudsql_crypto_key
   key_ring = google_kms_key_ring.key_ring.id
-//key_ring = "webapp-key-ring4"
+
   rotation_period = var.rotation_period
   lifecycle {
     prevent_destroy = false
