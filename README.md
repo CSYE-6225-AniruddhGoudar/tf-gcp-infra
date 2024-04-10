@@ -30,4 +30,6 @@ More ...
 
 # Creation of Instance Template , MIG , Loadbalancer
 
+Rolling Update and Github Actions
+
 TBD
